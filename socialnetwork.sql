@@ -1,3 +1,4 @@
+DROP TABLE IF EXISTS password_reset_codes;
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
@@ -6,6 +7,7 @@ CREATE TABLE users (
     last VARCHAR NOT NULL CHECK (last != ''),
     email VARCHAR NOT NULL UNIQUE CHECK (last != ''),
     password VARCHAR NOT NULL CHECK (last != ''),
+    url VARCHAR,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

@@ -1,15 +1,16 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import axios from "axios";
-import Welcome from "./Welcome"
+import axios from "./axios";
+import Welcome from "./Welcome";
+import App from "./App";
 
 let component;
 if (location.pathname === "/welcome") {
     // render the registration page
-    component = <Welcome />
+    component = <Welcome />;
 } else {
     // render the logo
-    component = <p>logo</p>
+    component = <App />;
 }
 
 ReactDOM.render(

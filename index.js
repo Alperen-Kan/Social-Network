@@ -4,10 +4,33 @@ const cookieSession = require('cookie-session');
 const csurf = require('csurf');
 const compression = require('compression');
 const { hash, compare } = require('./bcrypt');
-const { insertUser, getUser, insertCode, getCode, updatePw } = require('./db');
-const { secretCode } = require("./secret_code");
 const { sendEmail } = require("./ses");
 const cryptoRandomString = require('crypto-random-string');
+const multer = require('multer');
+const uidSafe = require('uid-safe');
+const path = require('path');
+const s3 = require("./s3");
+const config = require("./config");
+
+const { insertUser, getUserById, getUserByEmail, insertCode, getCode, updatePw, updateImage } = require('./db');
+
+const diskStorage = multer.diskStorage({
+    destination: function (req, file, callback) {
+        callback(null, __dirname + '/uploads');
+    },
+    filename: function (req, file, callback) {
+        uidSafe(24).then(function(uid) {
+            callback(null, uid + path.extname(file.originalname));
+        });
+    }
+});
+
+const uploader = multer({
+    storage: diskStorage,
+    limits: {
+        fileSize: 2097152
+    }
+});
 
 app.use(compression());
 
@@ -46,37 +69,47 @@ app.use((req, res, next) => {
 });
 
 
-app.get('*', function(req, res) {
-    res.sendFile(__dirname + '/index.html');
-});
 
-app.post("/registration", (req, res) => {
+
+// app.post("/registration", (req, res) => {
+//
+//     const {first, last, email, password} = req.body.data;
+//     hash(password)
+//         .then(hashedPw => {
+//             insertUser(first, last, email, hashedPw)
+//                 .then( ({rows}) => {
+//                     console.log("insertUser successfull");
+//                     console.log("id:", rows[0]);
+//                     res.json({
+//                         id: rows[0]
+//                     });
+//                 })
+//                 .catch(error => console.log("error in insertUser:", error));
+//         }).catch(error => console.log("error in hash:", error));
+// });
+
+app.post("/registration", async (req, res) => {
 
     const {first, last, email, password} = req.body.data;
-    hash(password)
-        .then(hashedPw => {
-            insertUser(first, last, email, hashedPw)
-                .then( ({rows}) => {
-                    console.log("insertUser successfull");
-                    console.log("id:", rows[0]);
-                    res.json({
-                        id: rows[0]
-                    });
-                })
-                .catch(error => console.log("error in insertUser:", error));
-        }).catch(error => console.log("error in hash:", error));
+    try {
+        const hashedPw = await hash(password);
+        const { rows } = await insertUser(first, last, email, hashedPw);
+        req.session.user = {id: rows[0]};
+        res.json({success: true});
+    } catch (error) {
+        console.log(error.message);
+        res.json({success: false});
+    }
 });
 
 app.post("/login", (req, res) => {
     console.log("login request received");
 
     const { email, password } = req.body.data;
-    getUser(email).then( ({rows}) => {
+    getUserByEmail(email).then( ({rows}) => {
         if (!rows[0]) {
             // no such user
-            res.json({
-                error: "user doesn't exist"
-            });
+            res.json({error: "user doesn't exist"});
         } else {
             // user exists
             compare(password, rows[0].password)
@@ -84,21 +117,12 @@ app.post("/login", (req, res) => {
                     if (pass) {
                         // correct password
                         // login successfull
-                        req.session.user = {
-                            id: rows[0].id,
-                            first: rows[0].first,
-                            last: rows[0].last,
-                            email: rows[0].email
-                        };
+                        req.session.user = {id: rows[0].id};
 
-                        res.json({
-                            success: true
-                        });
+                        res.json({success: true});
                     } else {
                         // wrong password
-                        res.json({
-                            error: "wrong password"
-                        });
+                        res.json({error: "wrong password"});
                     }
                 });
         }
@@ -108,7 +132,7 @@ app.post("/login", (req, res) => {
 app.post("/password/reset/start", (req, res) => {
     const { email } = req.body;
     console.log("pw reset start:", email);
-    getUser(email)
+    getUserByEmail(email)
         .then( ({rows}) => {
             console.log("rows:", rows);
             if (rows[0]) {
@@ -126,16 +150,14 @@ app.post("/password/reset/start", (req, res) => {
                         // send email
                         sendEmail(email, "Verify password reset", secretCode);
 
-                        res.json({
-                            success: true
-                        });
+                        res.json({success: true});
                     })
                     .catch(error => console.log("error in insertCode:", error));
             } else {
                 // user does not exist
                 res.json({
                     error: "user does not exist"
-                })
+                });
             }
         })
         .catch(error => console.log("error in selectUser:", error));
@@ -153,18 +175,18 @@ app.post("/password/reset/verify", (req, res) => {
                 if (code === rows[0].code) {
                     // hash new password
                     hash(password)
-                    .then(hashedPw => {
-                        // update password
-                        updatePw(email, hashedPw)
-                        .then(() => {
-                            // send success message
-                            res.json({
-                                success: true
-                            })
+                        .then(hashedPw => {
+                            // update password
+                            updatePw(email, hashedPw)
+                                .then(() => {
+                                    // send success message
+                                    res.json({
+                                        success: true
+                                    });
+                                })
+                                .catch(error => console.log("error in updatePw:", error));
                         })
-                        .catch(error => console.log("error in updatePw:", error));
-                    })
-                    .catch(error => console.log("error in hash:", error));
+                        .catch(error => console.log("error in hash:", error));
 
                 } else {
                     // inserted wrong code
@@ -178,10 +200,42 @@ app.post("/password/reset/verify", (req, res) => {
                 console.log("code expired");
                 res.json({
                     error: "code expired"
-                })
+                });
             }
         })
         .catch(error => console.log("error in getCode:", error));
+});
+
+app.get("/user", (req, res) => {
+    console.log("GET /users user.id:", req.session.user.id);
+    getUserById(req.session.user.id)
+        .then( ({rows}) => {
+            console.log("getUserById:", rows);
+            if (rows[0].url === null) {
+                rows[0].url = "https://t3.ftcdn.net/jpg/00/64/67/80/240_F_64678017_zUpiZFjj04cnLri7oADnyMH0XBYyQghG.jpg";
+            }
+            res.json(rows[0]);
+        })
+        .catch(error => console.log("error in getUserById:", error));
+});
+
+app.post("/user-image", uploader.single("file"), s3.upload, (req, res) => {
+    console.log("input:", req.body);
+    console.log("file:", req.file);
+
+    const { id } = req.body;
+    const filename = req.file.filename;
+    const url = config.s3Url + filename;
+
+    updateImage(id, url)
+        .then(() => {
+            res.json({success: true});
+        })
+        .catch(error => console.log("error in updateImage", error));
+});
+
+app.get('*', function(req, res) {
+    res.sendFile(__dirname + '/index.html');
 });
 
 app.listen(8080, function() {

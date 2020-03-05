@@ -17,3 +17,77 @@ form {
 input, button {
     margin: 10px 5px;
 }
+
+#modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    /* z-index: 100; */
+}
+
+#modal::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 0;
+    left: 0;
+    background-color: black;
+    opacity: .4;
+}
+
+#uploader-container {
+    padding: 20px 50px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    height: 600px;
+    width: 600px;
+    overflow-y: scroll;
+    background-color: white;
+    display: flex;
+    flex-direction: column;
+}
+
+.inputfile {
+	width: 0.1px;
+	height: 0.1px;
+	opacity: 0;
+	overflow: hidden;
+	position: absolute;
+	z-index: -1;
+}
+
+.inputfile + label {
+    font-size: 14px;
+    border: solid 1px lightgrey;
+    border-radius: 5px;
+    padding: 5px;
+    display: inline-block;
+    width: 100px;
+    text-align: center;
+    margin: 0 10px;
+}
+
+.inputfile:focus + label,
+.inputfile + label:hover {
+    border-color: white;
+    background-color: grey;
+    color: white;
+}
+
+.inputfile + label {
+	cursor: pointer;
+}
+
+.inputfile:focus + label {
+	outline: 1px dotted #000;
+	outline: -webkit-focus-ring-color auto 5px;
+}
+
+.inputfile + label * {
+	pointer-events: none;
+}

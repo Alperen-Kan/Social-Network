@@ -1,0 +1,57 @@
+if (!this.state.first) {
+    this.setState(state => {
+        let first = {};
+        first.error = true;
+        let errors = state.errors
+
+        return {
+            first,
+            errors
+        };
+    });
+    console.log("first name is missing");
+}
+if (!this.state.last) {
+    this.setState(state => {
+        let last = state.last;
+        last = {error: true};
+        let errors = state.errors.concat("last name is missing");
+
+        return {
+            last,
+            errors
+        };
+    });
+    console.log("last name is missing");
+}
+if (!this.state.email) {
+    this.setState(state => {
+        let email = state.email;
+        email = {error: true};
+        let errors = state.errors.concat("email is missing");
+
+        return {
+            email,
+            errors
+        }
+    });
+    console.log("email is missing");
+}
+if (!this.state.password) {
+    this.setState(state => {
+        let password = state.password
+        password = {error: true};
+        let errors = state.errors.concat("password is missing");
+
+        return {
+            password,
+            errors
+        }
+    });
+    console.log("password is missing");
+}
+
+
+import { Link } from 'react-router-dom'
+
+<Link to="/login">Log in</Link>

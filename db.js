@@ -16,7 +16,7 @@ exports.insertUser = function(first, last, email, password) {
     );
 };
 
-exports.getUser = function(email) {
+exports.getUserByEmail = function(email) {
     return db.query(
         `
         SELECT *
@@ -24,6 +24,17 @@ exports.getUser = function(email) {
         WHERE email = $1
         `,
         [email]
+    );
+};
+
+exports.getUserById = function(id) {
+    return db.query(
+        `
+        SELECT id, first, last, url
+        FROM users
+        WHERE id = $1
+        `,
+        [id]
     );
 };
 
@@ -57,5 +68,16 @@ exports.updatePw = function(email, password) {
         WHERE email = $1
         `,
         [email, password]
-    )
-}
+    );
+};
+
+exports.updateImage = function(id, url) {
+    return db.query(
+        `
+        UPDATE users
+        SET url = $2
+        WHERE id = $1
+        `,
+        [id, url]
+    );
+};
