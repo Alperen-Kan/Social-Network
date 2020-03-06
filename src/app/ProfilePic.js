@@ -1,11 +1,11 @@
 import React from "react";
 
-export default function({url, first, last, clickHandler}) {
+export default function({url, first, last, openUploader}) {
     return (
-        <img
+        <img id="profile-pic"
             src={url}
             alt={`${first} ${last}`}
-            onClick={clickHandler}
+            onClick={openUploader}
         />
     );
 }

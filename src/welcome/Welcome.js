@@ -2,7 +2,7 @@ import React from "react";
 import Registration from "./Registration";
 import Login from "./Login";
 import Reset from "./Reset";
-import axios from "./axios";
+import axios from "../axios";
 import { HashRouter, Route } from "react-router-dom";
 
 

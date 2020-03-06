@@ -3,16 +3,19 @@ const app = express();
 const cookieSession = require('cookie-session');
 const csurf = require('csurf');
 const compression = require('compression');
-const { hash, compare } = require('./bcrypt');
-const { sendEmail } = require("./ses");
+const { hash, compare } = require('./libs/bcrypt');
+const { sendEmail } = require("./aws/ses");
 const cryptoRandomString = require('crypto-random-string');
 const multer = require('multer');
 const uidSafe = require('uid-safe');
 const path = require('path');
-const s3 = require("./s3");
+const s3 = require("./aws/s3");
 const config = require("./config");
 
-const { insertUser, getUserById, getUserByEmail, insertCode, getCode, updatePw, updateImage } = require('./db');
+const {
+    insertUser, getUserById, getUserByEmail, insertCode, getCode, updatePw,
+    updateImage, updateBio
+} = require('./libs/db');
 
 const diskStorage = multer.diskStorage({
     destination: function (req, file, callback) {
@@ -94,7 +97,9 @@ app.post("/registration", async (req, res) => {
     try {
         const hashedPw = await hash(password);
         const { rows } = await insertUser(first, last, email, hashedPw);
-        req.session.user = {id: rows[0]};
+        req.session.user = {
+            id: rows[0].id
+        };
         res.json({success: true});
     } catch (error) {
         console.log(error.message);
@@ -117,7 +122,10 @@ app.post("/login", (req, res) => {
                     if (pass) {
                         // correct password
                         // login successfull
-                        req.session.user = {id: rows[0].id};
+                        req.session.user = {
+                            id: rows[0].id
+                        };
+                        console.log("req.session.user:", req.session.user);
 
                         res.json({success: true});
                     } else {
@@ -207,7 +215,8 @@ app.post("/password/reset/verify", (req, res) => {
 });
 
 app.get("/user", (req, res) => {
-    console.log("GET /users user.id:", req.session.user.id);
+    console.log("GET /users req received");
+    console.log("req.session.user:", req.session.user);
     getUserById(req.session.user.id)
         .then( ({rows}) => {
             console.log("getUserById:", rows);
@@ -221,17 +230,30 @@ app.get("/user", (req, res) => {
 
 app.post("/user-image", uploader.single("file"), s3.upload, (req, res) => {
     console.log("input:", req.body);
-    console.log("file:", req.file);
 
     const { id } = req.body;
     const filename = req.file.filename;
     const url = config.s3Url + filename;
+    console.log("filename:", filename);
+    console.log("url:", url);
 
     updateImage(id, url)
         .then(() => {
-            res.json({success: true});
+            res.json({url: url});
         })
         .catch(error => console.log("error in updateImage", error));
+});
+
+app.post("/updatebio", (req, res) => {
+    console.log("POST /updatebio req received");
+    const { bio } = req.body;
+    console.log("bio:", bio);
+    updateBio(req.session.user.id, bio)
+        .then( ({rows}) => {
+            console.log("update bio was successfull");
+            res.json({bio: rows[0].bio});
+        })
+        .catch(error => console.log("error in updateBio:", error));
 });
 
 app.get('*', function(req, res) {

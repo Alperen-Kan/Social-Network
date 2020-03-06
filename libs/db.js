@@ -30,7 +30,7 @@ exports.getUserByEmail = function(email) {
 exports.getUserById = function(id) {
     return db.query(
         `
-        SELECT id, first, last, url
+        SELECT id, first, last, url, bio
         FROM users
         WHERE id = $1
         `,
@@ -79,5 +79,17 @@ exports.updateImage = function(id, url) {
         WHERE id = $1
         `,
         [id, url]
+    );
+};
+
+exports.updateBio = function(id, bio) {
+    return db.query(
+        `
+        UPDATE users
+        SET bio = $2
+        WHERE id = $1
+        Returning bio
+        `,
+        [id, bio]
     );
 };

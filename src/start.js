@@ -1,8 +1,8 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import axios from "./axios";
-import Welcome from "./Welcome";
-import App from "./App";
+import Welcome from "./welcome/Welcome";
+import App from "./app/App";
 
 let component;
 if (location.pathname === "/welcome") {
