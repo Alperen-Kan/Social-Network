@@ -28,47 +28,26 @@ export default class Registration extends React.Component {
         }
     }
 
-    submit(e) {
+    async submit(e) {
         e.preventDefault();
-        if (this.state.first &&
+        if (
+            this.state.first &&
             this.state.last &&
             this.state.email &&
-            this.state.password) {
+            this.state.password &&
+            (this.state.password === this.state.password2)
+        ) {
 
-            axios.post("/registration", {data: this.state})
-                .then(response => {
-                    console.log("response:", response);
-                    location.replace('/');
-                })
-                .catch(error => {
-                    console.log("error in POST /registration", error);
-                });
+            const { data } = axios.post("/registration", {data: this.state});
+            if (data.success) {
+                location.replace('/');
+            } else {
+                // error in registration
+            }
         } else {
-            /*
-            this.setError("first");
-            this.setError("last");
-            this.setError("email");
-            this.setError("password");
-            */
+            // error: form not filled out
         }
     }
-
-    /*
-    setError(name) {
-        if (!this.state[name]) {
-            this.setState(state => {
-                let errors = state.errors;
-                errors[name] = true;
-
-                return {
-                    [name]: {
-                        error: true
-                    },
-                    errors
-                };
-            });
-    }
-    */
 
     render() {
         return (
@@ -82,6 +61,8 @@ export default class Registration extends React.Component {
                     <input onChange={this.handleChange} type="text" name="email" placeholder="email"/>
 
                     <input onChange={this.handleChange} type="password" name="password" placeholder="password"/>
+
+                    <input onChange={this.handleChange} type="password" name="password2" placeholder="repeat password"/>
 
                     <button type="submit">submit</button>
                 </form>
