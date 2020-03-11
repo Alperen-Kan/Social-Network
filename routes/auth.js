@@ -8,7 +8,7 @@ const {
 
 app.post("/registration", async (req, res) => {
 
-    const {first, last, email, password} = req.body.data;
+    const {first, last, email, password} = req.body;
     try {
         const hashedPw = await hash(password);
         const { rows } = await insertUser(first, last, email, hashedPw);
@@ -17,8 +17,10 @@ app.post("/registration", async (req, res) => {
         };
         res.json({success: true});
     } catch (error) {
-        console.log(error.message);
-        res.json({success: false});
+        console.log("error in POST /registration", error.message);
+        if (error.message == 'duplicate key value violates unique constraint "users_email_key"') {
+            res.json({error: "email address is already registered"});
+        }
     }
 });
 
