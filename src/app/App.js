@@ -6,6 +6,7 @@ import ProfilePic from "./ProfilePic";
 import BioEditor from "./BioEditor";
 import Uploader from "./Uploader";
 import OtherProfile from "./OtherProfile";
+import FindPeople from "./FindPeople";
 
 export default class App extends React.Component {
     constructor(props) {
@@ -72,6 +73,7 @@ export default class App extends React.Component {
                             })}
                         />
                     }
+
                     <Route
                          path="/user/:id"
                          render={props => (
@@ -82,6 +84,12 @@ export default class App extends React.Component {
                              />
                          )}
                     />
+
+                    <Route
+                        path="/findpeople"
+                        component={FindPeople}
+                    />
+
                 </div>
             </BrowserRouter>
             </>

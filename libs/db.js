@@ -137,3 +137,25 @@ exports.deleteFriendship = function(sender_id, receiver_id) {
         [sender_id, receiver_id]
     );
 };
+
+exports.getRecentUsers = function() {
+    return db.query(
+        `
+        SELECT * FROM users
+        ORDER BY id DESC
+        LIMIT 3
+        `
+    );
+};
+
+exports.getUsers = function(name) {
+    return db.query(
+        `
+        SELECT id, first, last, url FROM users
+        WHERE (first ILIKE $1)
+        OR (last ILIKE $1)
+        ORDER BY first ASC
+        `,
+        [name + '%']
+    );
+};

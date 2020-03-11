@@ -19,7 +19,7 @@ export default class OtherProfile extends React.Component {
                     console.log("error: user doesn't exist");
                     this.setState({
                         error: true
-                    }) ;
+                    });
                 } else {
                     // console.log("data:", data);
                     this.setState({ ...data}, () => console.log("this.state:",this.state));

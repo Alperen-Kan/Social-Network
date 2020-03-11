@@ -1,6 +1,7 @@
 const { app } = require('../index');
 const { getFriendshipStatus, makeFriendRequest,
-    acceptFriendRequest, deleteFriendship
+    acceptFriendRequest, deleteFriendship,
+    getRecentUsers, getUsers
 } = require('../libs/db');
 
 app.get("/initial-friendship-status/:id", async (req, res) => {
@@ -67,5 +68,25 @@ app.post("/end-friendship/:id", async (req, res) => {
         res.json({buttonText: "Make Friend Request"});
     } catch (e) {
         console.log("error in deleteFriendship:", e);
+    }
+});
+
+app.get("/recent-users", async (req, res) => {
+    console.log("GET /recent-users req received");
+    try {
+        const { rows } = await getRecentUsers();
+        res.json(rows);
+    } catch (e) {
+        console.log("error in getRecentUsers:", e);
+    }
+});
+
+app.post("/users", async (req, res) => {
+    const { name } = req.body;
+    try {
+        const { rows } = await getUsers(name);
+        res.json(rows);
+    } catch (e) {
+        console.log("error in getUsers:", e);
     }
 });
