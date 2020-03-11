@@ -87,7 +87,11 @@ export default class App extends React.Component {
 
                     <Route
                         path="/findpeople"
-                        component={FindPeople}
+                        render={props => (
+                            <FindPeople
+                                history={props.history}
+                            />
+                        )}
                     />
 
                 </div>

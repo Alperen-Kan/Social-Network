@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
+import ProfilePic from "./ProfilePic";
 import axios from "../axios";
 import useStatefulFields from "../hooks/useStatefulFields";
 
-export default function FindPeople() {
+export default function FindPeople(props) {
 
     const [name, setName ] = useStatefulFields();
     const [users, setUsers] = useState([]);
@@ -32,31 +33,37 @@ export default function FindPeople() {
         };
     }, [name]);
 
-
+    const clickHandler = id => {
+        // console.log("I've been clicked", e);
+        props.history.push(`/user/${id}`);
+    };
 
     return (
         <>
         <h1>Find People</h1>
-        {!name &&
-            <p>Checkout  who just joined!</p>
-        }
 
-        {name.name &&
-            <textarea onChange={setName} name="name" placeholder="enter name" value={name.name}/>
-        }
+        <textarea onChange={setName} name="name" placeholder="enter name" placeholder="enter name" value={name.name}/>
 
+        {!name.name &&
+            <h1>Checkout  who just joined!</h1>
+        }
         {users.map(
             user => (
                 <div key={user.id}>
                     <p>{user.first} {user.last}</p>
-                    <img src={user.url}/>
+                    <ProfilePic
+                        id={user.id}
+                        url={user.url}
+                        first={user.first}
+                        last={user.last}
+                        clickHandler={() => {
+                            clickHandler(user.id);
+                        }}
+                    />
                 </div>
             )
         )}
 
-        {!name.name &&
-            <input onChange={setName} name="name" type="text" placeholder="enter name"/>
-        }
         </>
     )
 
