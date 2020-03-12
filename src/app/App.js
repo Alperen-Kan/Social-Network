@@ -7,6 +7,7 @@ import BioEditor from "./BioEditor";
 import Uploader from "./Uploader";
 import OtherProfile from "./OtherProfile";
 import FindPeople from "./FindPeople";
+import Header from "./Header.js";
 
 export default class App extends React.Component {
     constructor(props) {
@@ -32,6 +33,7 @@ export default class App extends React.Component {
             <>
             <BrowserRouter>
                 <div>
+                    <Header data={this.state}/>
                     <Route
                         exact path="/"
                         render={() => (

@@ -42,24 +42,23 @@ export default function FindPeople(props) {
         <>
         <h1>Find People</h1>
 
-        <textarea onChange={setName} name="name" placeholder="enter name" placeholder="enter name" value={name.name}/>
+        <textarea onChange={setName} name="name" placeholder="enter name" placeholder="enter name" value={name.name} rows="1"/>
 
         {!name.name &&
             <h1>Checkout  who just joined!</h1>
         }
         {users.map(
             user => (
-                <div key={user.id}>
-                    <p>{user.first} {user.last}</p>
+                <div className="user-card" key={user.id} onClick={() => {
+                    clickHandler(user.id);
+                }}>
                     <ProfilePic
                         id={user.id}
                         url={user.url}
                         first={user.first}
                         last={user.last}
-                        clickHandler={() => {
-                            clickHandler(user.id);
-                        }}
                     />
+                    <p className="user-name">{user.first} {user.last}</p>
                 </div>
             )
         )}

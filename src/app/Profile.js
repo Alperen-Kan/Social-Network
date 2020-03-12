@@ -3,7 +3,7 @@ import React from "react";
 export default function( { first, last, profilePic, bioEditor } ) {
 
     return (
-        <div>
+        <div className="profile">
             {profilePic}
             <p>{first} {last}</p>
             {bioEditor}

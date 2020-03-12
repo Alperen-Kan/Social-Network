@@ -52,7 +52,7 @@ export default class BioEditor extends React.Component {
 
     render() {
         return (
-            <div>
+            <div id="bio-editor">
                 {!this.state.bioEditorIsVisible && this.state.bio &&
                     <div>
                         <p>{this.state.bio}</p>
@@ -68,7 +68,12 @@ export default class BioEditor extends React.Component {
 
                 {this.state.bioEditorIsVisible &&
                     <div>
-                        <textarea value={this.state.bio} onChange={this.updateBio} placeholder="please enter your bio here"></textarea>
+                        <textarea
+                            value={this.state.bio}
+                            onChange={this.updateBio}
+                            placeholder="please enter your bio here"
+                            rows="5" cols="30"
+                        ></textarea>
                         <button onClick={this.uploadBio}>save bio</button>
                     </div>
                 }
