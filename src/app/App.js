@@ -7,7 +7,8 @@ import BioEditor from "./BioEditor";
 import Uploader from "./Uploader";
 import OtherProfile from "./OtherProfile";
 import FindPeople from "./FindPeople";
-import Header from "./Header.js";
+import Header from "./Header";
+import Friends from "./Friends";
 
 export default class App extends React.Component {
     constructor(props) {
@@ -96,6 +97,10 @@ export default class App extends React.Component {
                         )}
                     />
 
+                    <Route
+                        path="/friends"
+                        component={Friends}
+                    />
                 </div>
             </BrowserRouter>
             </>

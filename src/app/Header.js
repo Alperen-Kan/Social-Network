@@ -1,6 +1,7 @@
 import React from "react";
 import ProfilePic from "./ProfilePic";
 import { Link } from 'react-router-dom';
+import Logout from "../welcome/Logout";
 
 export default function Header ({data}) {
 
@@ -12,6 +13,12 @@ export default function Header ({data}) {
             <Link to="/findpeople">
                 <h3>Find People</h3>
             </Link>
+
+            <Link to="/friends">
+                <h3>Friends</h3>
+            </Link>
+
+            <Logout/>
 
             <Link to="/">
                 <ProfilePic

@@ -129,3 +129,9 @@ app.post("/password/reset/verify", (req, res) => {
         })
         .catch(error => console.log("error in getCode:", error));
 });
+
+app.get("/logout", (req, res) => {
+    console.log("logout request received");
+    delete req.session.user;
+    res.redirect("/welcome#/login");
+});
