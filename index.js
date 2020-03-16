@@ -1,5 +1,10 @@
 const express = require('express');
 const app = express();
+const server = require('http').Server(app);
+const io = require('socket.io')(
+    server,
+    { origins: 'localhost:8080 mysocialnetworkapp.herokuapp.com:*' }
+);
 const cookieSession = require('cookie-session');
 const csurf = require('csurf');
 const compression = require('compression');
@@ -40,6 +45,21 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use((req, res, next) => {
+    if (!req.session.user &&
+        !req.url.startsWith('/welcome') &&
+        req.url != '/registration' &&
+        req.url != '/login' &&
+        req.url != '/password/reset/start' &&
+        req.url != '/password/reset/verify' &&
+        req.url != '/logout'
+    ) {
+        return res.redirect('/welcome');
+    } else {
+        next();
+    }
+});
+
 exports.app = app;
 
 require("./routes/auth");
@@ -50,6 +70,23 @@ app.get('*', function(req, res) {
     res.sendFile(__dirname + '/index.html');
 });
 
-app.listen(8080, function() {
+server.listen(8080, function() {
     console.log("I'm listening.");
+});
+
+io.on('connection', socket => {
+    // runs if client is connected
+    console.log(
+        `A socket with the id ${socket.id} just connected.`
+    );
+
+    socket.emit('hello', {
+        message: 'Thank you. It is great to be here.'
+    });
+
+    socket.on('disconnect', () => {
+        console.log(
+            `A socket with the id ${socket.id} just disconnected.`
+        );
+    });
 });
