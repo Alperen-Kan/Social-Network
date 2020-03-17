@@ -175,3 +175,12 @@ input, button {
     display: flex;
     flex-direction: column;
 }
+
+.chat-container {
+    height: 300px;
+    overflow-y: scroll;
+}
+
+.chat-message {
+    display: flex
+}

@@ -20,7 +20,7 @@ export default function SimpleCard({id, url, first, last, button}) {
                 component="img"
                 alt={`${first} ${last}`}
                 image={url}
-                height="300"
+                height="200"
             />
             <CardActions>
                 {button}

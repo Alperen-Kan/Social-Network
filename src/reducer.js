@@ -28,5 +28,22 @@ export default function(state = {}, action) {
         };
     }
 
+    if (action.type === "CHAT_MESSAGES") {
+        state = {
+            ...state,
+            chatMessages: action.chatMessages
+        };
+    }
+
+    if (action.type === "CHAT_MESSAGE") {
+        state = {
+            ...state,
+            chatMessages: [
+                ...state.chatMessages,
+                action.chatMessage
+            ]
+        };
+    }
+
     return state;
 }

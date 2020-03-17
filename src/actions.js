@@ -28,3 +28,21 @@ export async function endFriendship(otherUserId) {
         otherUserId: otherUserId
     };
 }
+
+export function chatMessages(messages) {
+    console.log("chatMessages action running");
+    console.log("chatMessages data:", messages);
+    return {
+        type: "CHAT_MESSAGES",
+        chatMessages: messages
+    };
+}
+
+export function chatMessage(messageObj) {
+    console.log("chatMessage action running");
+    console.log("chatMessageObj:", messageObj);
+    return {
+        type: "CHAT_MESSAGE",
+        chatMessage: messageObj
+    };
+}

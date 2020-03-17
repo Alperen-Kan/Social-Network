@@ -1,4 +1,6 @@
 DROP TABLE IF EXISTS password_reset_codes;
+DROP TABLE IF EXISTS chat_messages;
+DROP TABLE IF EXISTS friendships;
 DROP TABLE IF EXISTS users;
 
 CREATE TABLE users (
@@ -24,5 +26,12 @@ CREATE TABLE friendships (
     receiver_id INT NOT NULL REFERENCES users(id),
     sender_id INT NOT NULL REFERENCES users(id),
     accepted BOOLEAN DEFAULT false,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+)
+
+CREATE TABLE chat_messages (
+    id SERIAL PRIMARY KEY,
+    message VARCHAR,
+    sender_id INT NOT NULL REFERENCES users(id),
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 )

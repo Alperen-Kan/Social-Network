@@ -178,8 +178,32 @@ exports.makeFriendRequest = function(sender_id, receiver_id) {
     return db.query(
         `
         INSERT INTO friendships (sender_id, receiver_id)
-        VALUES (2, 1)
+        VALUES ($1, $2)
         `,
         [sender_id, receiver_id]
+    );
+};
+
+exports.getLastTenChatMessages = function() {
+    return db.query(
+        `
+        SELECT users.id AS "userId", users.first, users.last, users.url, chat_messages.id AS "messageId", chat_messages.message, chat_messages.created_at
+        FROM chat_messages
+        LEFT JOIN users
+        ON users.id = sender_id
+        ORDER BY chat_messages.id DESC
+        LIMIT 10
+        `
+    );
+};
+
+exports.insertChatMessage = function(message, sender_id) {
+    return db.query(
+        `
+        INSERT INTO chat_messages (message, sender_id)
+        VALUES ($1, $2)
+        Returning created_at, id
+        `,
+        [message, sender_id]
     );
 };
