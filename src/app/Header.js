@@ -10,6 +10,10 @@ export default function Header ({data}) {
 
             <h1>The Network</h1>
 
+            <Link to="/users-online">
+                <h3>See who&apos;s online</h3>
+            </Link>
+
             <Link to="/chat">
                 <h3>Chat</h3>
             </Link>

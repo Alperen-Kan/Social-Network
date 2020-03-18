@@ -25,7 +25,6 @@ app.post("/registration", async (req, res) => {
 });
 
 app.post("/login", async (req, res) => {
-    console.log("login request received");
 
     const { email, password } = req.body;
     const { rows } = await getUserByEmail(email);
@@ -36,14 +35,12 @@ app.post("/login", async (req, res) => {
     } else {
         // user exists
         const pass = await compare(password, rows[0].password);
-        console.log("pass:", pass);
         if (pass) {
             // correct password
             // login successfull
             req.session.user = {
                 id: rows[0].id
             };
-            console.log("req.session.user:", req.session.user);
 
             res.json({success: true});
         } else {
@@ -55,22 +52,18 @@ app.post("/login", async (req, res) => {
 
 app.post("/password/reset/start", (req, res) => {
     const { email } = req.body;
-    console.log("pw reset start:", email);
+
     getUserByEmail(email)
         .then( ({rows}) => {
-            console.log("rows:", rows);
             if (rows[0]) {
                 // user exists
-                console.log("user exists");
                 // generate secret code
                 const secretCode = cryptoRandomString({
                     length: 6
                 });
-                console.log("secret code:", secretCode);
                 // insert code into db
                 insertCode(secretCode, email)
                     .then(() => {
-                        console.log("code has been inserted");
                         // send email
                         sendEmail(email, "Verify password reset", secretCode);
 
@@ -94,7 +87,6 @@ app.post("/password/reset/verify", (req, res) => {
     // db query to get code by email
     getCode(email)
         .then( ({rows}) => {
-            console.log("getCode:", rows);
             if (rows[0]) {
                 if (code === rows[0].code) {
                     // hash new password
@@ -114,14 +106,12 @@ app.post("/password/reset/verify", (req, res) => {
 
                 } else {
                     // inserted wrong code
-                    console.log("wrong code");
                     res.json({
                         error: "wrong code"
                     });
                 }
             } else {
                 // code expired
-                console.log("code expired");
                 res.json({
                     error: "code expired"
                 });
@@ -131,7 +121,6 @@ app.post("/password/reset/verify", (req, res) => {
 });
 
 app.get("/logout", (req, res) => {
-    console.log("logout request received");
     delete req.session.user;
     res.redirect("/welcome#/login");
 });

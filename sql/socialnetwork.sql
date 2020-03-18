@@ -19,19 +19,20 @@ CREATE TABLE password_reset_codes (
     code VARCHAR,
     email VARCHAR,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
+);
 
 CREATE TABLE friendships (
     id SERIAL PRIMARY KEY,
-    receiver_id INT NOT NULL REFERENCES users(id),
-    sender_id INT NOT NULL REFERENCES users(id),
+    receiver_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    sender_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     accepted BOOLEAN DEFAULT false,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
+);
 
 CREATE TABLE chat_messages (
     id SERIAL PRIMARY KEY,
     message VARCHAR,
-    sender_id INT NOT NULL REFERENCES users(id),
+    sender_id INT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+    receiver_id INT REFERENCES users(id) ON DELETE CASCADE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-)
+);

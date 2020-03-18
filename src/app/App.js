@@ -10,6 +10,7 @@ import FindPeople from "./FindPeople";
 import Header from "./Header";
 import Friends from "./Friends";
 import Chat from "./Chat";
+import UsersOnline from "./UsersOnline";
 
 export default class App extends React.Component {
     constructor(props) {
@@ -48,9 +49,9 @@ export default class App extends React.Component {
                                         first={this.state.first}
                                         last={this.state.last}
                                         url={this.state.url}
-                                        openUploader={() => this.setState({
+                                        clickHandler={() => this.setState({
                                             uploaderVisible: true
-                                        })}
+                                        }, () => console.log("openUploader has been clicked"))}
                                     />
                                 }
 
@@ -105,6 +106,10 @@ export default class App extends React.Component {
                     <Route
                         path="/chat"
                         component={Chat}
+                    />
+                    <Route
+                        path="/users-online"
+                        component={UsersOnline}
                     />
                 </div>
             </BrowserRouter>

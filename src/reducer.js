@@ -45,5 +45,36 @@ export default function(state = {}, action) {
         };
     }
 
+    if (action.type === "USERS_ONLINE") {
+        state = {
+            ...state,
+            usersOnline: action.users
+        };
+    }
+
+    if (action.type === "USER_IS_ONLINE") {
+        state = {
+            ...state,
+            usersOnline: [
+                ...state.usersOnline,
+                action.user
+            ]
+        };
+    }
+
+    if (action.type === "USER_IS_OFFLINE") {
+        state = {
+            ...state,
+            usersOnline: state.usersOnline.filter(user => user.id != action.user.id)
+        };
+    }
+
+    if(action.type === "IMAGE_CHANGE") {
+        state = {
+            ...state,
+            
+        }
+    }
+
     return state;
 }

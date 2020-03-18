@@ -46,3 +46,35 @@ export function chatMessage(messageObj) {
         chatMessage: messageObj
     };
 }
+
+export function usersOnline(users) {
+    console.log("usersOnline action running");
+    return {
+        type: "USERS_ONLINE",
+        users: users
+    };
+}
+
+export function userIsOnline(user) {
+    console.log("userIsOnline action running");
+    return {
+        type: "USER_IS_ONLINE",
+        user: user
+    };
+}
+
+export function userIsOffline(user) {
+    console.log("userIsOffline action running");
+    return {
+        type: "USER_IS_OFFLINE",
+        user: user
+    };
+}
+
+export function imageChange(user) {
+    console.log("imageChange running");
+    return {
+        type: "IMAGE_CHANGE",
+        user: user
+    };
+}

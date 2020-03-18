@@ -84,6 +84,14 @@ server.listen(8080, function() {
     console.log("I'm listening.");
 });
 
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////// socket.io //////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+let listOfOnlineUsers = {};
+let usersOnline = [];
 
 io.on('connection', socket => {
     console.log(
@@ -96,43 +104,40 @@ io.on('connection', socket => {
 
     const userId = socket.request.session.user.id;
 
-    // if a user make it here, it means they have logged into our network
-    // and they have successfully connected to the sockets
+    if (!Object.values(listOfOnlineUsers).includes(userId)) {
+        console.log("user was not online before");
+        getUserById(userId).then(({rows}) => {
+            usersOnline.push(rows[0]);
+            console.log("usersOnline:", usersOnline);
+            socket.emit("usersOnline", usersOnline);
+            socket.broadcast.emit("userIsOnline", rows[0]);
+        });
+    }
 
-    // it is a good time to go and get the last 10 chat messages
-    // that means we need to make a new table
+    // if user disconnects, emit message that user is offline
+    socket.on("disconnect", () => {
+        console.log(`user with userId ${userId} disconnected`);
+        delete listOfOnlineUsers[socket.id];
+        console.log("usersOnline after disconnect:", listOfOnlineUsers);
+        if (!Object.values(listOfOnlineUsers).includes(userId)) {
+            getUserById(userId).then(({rows}) => {
+                usersOnline = usersOnline.filter(user => user.id != userId);
+                socket.broadcast.emit("userIsOffline", rows[0]);
+            });
+        }
+    });
 
-    // getLastTenChatMessages probably needs to use a join.
-    // join users and chats...
+    listOfOnlineUsers[socket.id] = userId;
+    console.log("listOfOnlineUsers:", listOfOnlineUsers);
 
     getLastTenChatMessages().then( ({rows}) => {
-        console.log("rows:", rows);
         socket.emit("chatMessages", rows.reverse());
     });
 
     // we need to listen for a new chat message being emitted..
-
-    // socket.on("muffin", myMuffin => {
-    //     console.log("myMuffin on the server:", myMuffin);
-    //
-    //     // emit a message to everyone connected to the social network.
-    //     io.sockets.emit("muffinMagic", myMuffin);
-    // });
-
     socket.on("newMessage", newMsg => {
-        console.log("newMessage from chat.js component:", newMsg);
-        // we would want to look up the user that sent the message
-        console.log("userId in newMessage:", userId);
-
-        // we want to do a db query to store the new chat message into chat table.
-        // we want to build up a chat message object (that looks like chat message)
-        // object we logged in getLastTenChatMessages
-        // do a db query to look up info about user.
-        // When we have done that we want to emit our message obj to everyone
         Promise.all([insertChatMessage(newMsg, userId), getUserById(userId)])
             .then(results => {
-                console.log("Promise.all results[0]", results[0]);
-                console.log("Promise.all results[1]", results[1].rows);
                 const created_at = results[0].rows[0]["created_at"];
                 const messageId = results[0].rows[0]["id"];
                 const user = results[1].rows[0];
@@ -147,23 +152,11 @@ io.on('connection', socket => {
                 });
             })
             .catch(error => console.log("error in Promise.all:", error));
+    });
+
+    socket.on("privateMessage", privateMsg => {
+        const receiver_id = privateMsg.receiver_id;
 
     });
-});
 
-// io.on('connection', socket => {
-//     // runs if client is connected
-//     console.log(
-//         `A socket with the id ${socket.id} just connected.`
-//     );
-//
-//     socket.emit('hello', {
-//         message: 'Thank you. It is great to be here.'
-//     });
-//
-//     socket.on('disconnect', () => {
-//         console.log(
-//             `A socket with the id ${socket.id} just disconnected.`
-//         );
-//     });
-// });
+});

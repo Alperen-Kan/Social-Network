@@ -1,16 +1,12 @@
 import * as io from 'socket.io-client';
 
-import { chatMessages, chatMessage } from './actions';
+import { chatMessages, chatMessage, usersOnline, userIsOnline, userIsOffline } from './actions';
 
 export let socket;
 
 export const init = store => {
     if (!socket) {
         socket = io.connect();
-
-        // socket.on("muffinMagic", myMuffin => {
-        //     console.log("myMuffin on the client side:", myMuffin);
-        // });
 
         socket.on(
             'chatMessages',
@@ -28,6 +24,37 @@ export const init = store => {
                 console.log("new chatMessage received:", msg);
                 store.dispatch(
                     chatMessage(msg)
+                );
+            }
+        );
+
+        socket.on(
+            'usersOnline',
+            users => {
+                console.log("users online:", users);
+                store.dispatch(
+                    usersOnline(users)
+                );
+            }
+        );
+
+        socket.on(
+            'userIsOnline',
+            user => {
+                // console.log("user is online");
+                console.log(`${user.first} ${user.last} is online:`, user);
+                store.dispatch(
+                    userIsOnline(user)
+                );
+            }
+        );
+
+        socket.on(
+            'userIsOffline',
+            user => {
+                console.log("user is offline:", user);
+                store.dispatch(
+                    userIsOffline(user)
                 );
             }
         );

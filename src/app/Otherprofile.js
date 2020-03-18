@@ -9,8 +9,6 @@ export default class OtherProfile extends React.Component {
     }
 
     componentDidMount() {
-        console.log("OtherProfile has mounted");
-        console.log("user id:", this.props.match.params.id);
         axios.get(`/user/${this.props.match.params.id}.json`).then(
             ({data}) => {
                 if (data.redirectTo == '/') { // if the server says the id in the url belongs to the logged in user (optional)

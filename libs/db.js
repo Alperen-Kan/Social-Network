@@ -191,6 +191,7 @@ exports.getLastTenChatMessages = function() {
         FROM chat_messages
         LEFT JOIN users
         ON users.id = sender_id
+        WHERE receiver_id is null
         ORDER BY chat_messages.id DESC
         LIMIT 10
         `
@@ -205,5 +206,29 @@ exports.insertChatMessage = function(message, sender_id) {
         Returning created_at, id
         `,
         [message, sender_id]
+    );
+};
+
+exports.insertPrivateMessage = function(message, sender_id, receiver_id) {
+    return db.query(
+        `
+        INSERT INTO chat_messages (message, sender_id, receiver_id)
+        VALUES ($1, $2, $3)
+        Returning created_at, id
+        `,
+        [message, sender_id, receiver_id]
+    );
+};
+
+exports.getPrivateMessages = function(sender_id, receiver_id) {
+    return db.query(
+        `
+        SELECT users.id, users.first, users.last, chat_messages.message, chat_messages.created_at
+        FROM chat_messages
+        JOIN users
+        ON (receiver_id = $2 AND sender_id = $1 AND sender_id = users.id)
+        OR (receiver_id = $1 AND sender_id = $2 AND sender_id = users.id)
+        `,
+        [sender_id, receiver_id]
     );
 };

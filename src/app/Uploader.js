@@ -1,7 +1,11 @@
 import React from "react";
 import axios from "../axios";
+import { useDispatch } from 'react-redux';
+import { imageChange } from "../actions";
 
 export default function({ id, setImage, closeUploader }) {
+    const dispatch = useDispatch();
+
     function readFile(e) {
         const file = e.target.files[0];
 
@@ -17,6 +21,7 @@ export default function({ id, setImage, closeUploader }) {
             .then( ({data}) => {
                 console.log("response from POST /user-image:", data);
                 setImage(data.url);
+                // dispatch(imageChange( {userId: id, url: data.url} ));
                 closeUploader();
             })
             .catch(error => console.log("error in POST /user-image", error));
