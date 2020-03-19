@@ -19,8 +19,6 @@ export default function Friends(props) {
         )
     )
 
-    console.log("props:", props);
-
     const friendRequestsReceived = useSelector(
         state => state.friends && state.friends.filter(
             friend => friend.accepted == false && friend.sender_id != props.userId

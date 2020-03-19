@@ -1,6 +1,6 @@
 import * as io from 'socket.io-client';
 
-import { chatMessages, chatMessage, usersOnline, userIsOnline, userIsOffline } from './actions';
+import { chatMessages, chatMessage, usersOnline, userIsOnline, userIsOffline, receiveFriends } from './actions';
 
 export let socket;
 
@@ -55,6 +55,15 @@ export const init = store => {
                 console.log("user is offline:", user);
                 store.dispatch(
                     userIsOffline(user)
+                );
+            }
+        );
+
+        socket.on(
+            'friendRequestUpdate',
+            user => {
+                store.dispatch(
+                    receiveFriends()
                 );
             }
         );

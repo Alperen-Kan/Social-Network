@@ -1,4 +1,8 @@
 import axios from "./axios";
+import { socket } from "./socket";
+import { useSelector } from "react-redux";
+
+// if other user is online emit message
 
 export async function receiveFriends() {
     const { data } = await axios.get("/friends.json");
@@ -9,10 +13,12 @@ export async function receiveFriends() {
 }
 
 export async function acceptFriendRequest(otherUserId) {
-    console.log("acceptFriendRequest running");
+
     await axios.post(`/accept-friend-request/${otherUserId}`);
-    console.log("acceptFriendRequest about to reduce");
-    console.log("acceptFriendRequest otherUserId:", otherUserId);
+
+    // if otherUserId is online use socket.io to notify otherUserId
+    socket.emit("acceptFriendRequest", otherUserId);
+
     return {
         type: "ACCEPT_FRIENDSHIP",
         otherUserId: otherUserId

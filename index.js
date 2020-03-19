@@ -159,4 +159,22 @@ io.on('connection', socket => {
 
     });
 
+    socket.on("acceptFriendRequest", otherUserId => {
+        // search for otherUserId in listOfOnlineUsers
+        const userSockets = [];
+        for (const socketId in listOfOnlineUsers) {
+            if (listOfOnlineUsers[socketId] == otherUserId) {
+                console.log("user is online with socket id:", socketId);
+                userSockets.push(socketId);
+            }
+        }
+        console.log("userSockets:", userSockets);
+        getUserById(otherUserId).then( ({rows}) => {
+
+            for (var i = 0; i < userSockets.length; i++) {
+                io.sockets.sockets[userSockets[i]].emit('friendRequestUpdate', rows[0]);
+            }
+        }).catch(error => console.log("error in getUserById:", error));
+    });
+
 });
