@@ -72,8 +72,8 @@ export default function(state = {}, action) {
     if(action.type === "IMAGE_CHANGE") {
         state = {
             ...state,
-            
-        }
+            // do something
+        };
     }
 
     return state;

@@ -2,7 +2,9 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardActions from '@material-ui/core/CardActions';
+import CardContent from '@material-ui/core/CardContent';
 import CardMedia from '@material-ui/core/CardMedia';
+import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 
 const useStyles = makeStyles({
@@ -11,7 +13,7 @@ const useStyles = makeStyles({
     },
 });
 
-export default function SimpleCard({id, url, first, last, button}) {
+export default function SimpleCard({id, url, first, last, button, clickHandler}) {
     const classes = useStyles();
 
     return (
@@ -21,7 +23,13 @@ export default function SimpleCard({id, url, first, last, button}) {
                 alt={`${first} ${last}`}
                 image={url}
                 height="200"
+                onClick={clickHandler}
             />
+            <CardContent>
+                <Typography variant="h4">
+                    {first} {last}
+                </Typography >
+            </CardContent>
             <CardActions>
                 {button}
             </CardActions>

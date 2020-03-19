@@ -101,7 +101,12 @@ export default class App extends React.Component {
 
                     <Route
                         path="/friends"
-                        component={Friends}
+                        render={props => (
+                            <Friends
+                                history={props.history}
+                                userId={this.state.id}
+                            />
+                        )}
                     />
                     <Route
                         path="/chat"
@@ -109,7 +114,11 @@ export default class App extends React.Component {
                     />
                     <Route
                         path="/users-online"
-                        component={UsersOnline}
+                        render={props => (
+                            <UsersOnline
+                                history={props.history}
+                            />
+                        )}
                     />
                 </div>
             </BrowserRouter>
