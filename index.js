@@ -9,7 +9,7 @@ const cookieSession = require('cookie-session');
 const csurf = require('csurf');
 const compression = require('compression');
 const {
-    getUserById, insertChatMessage, getLastTenChatMessages
+    getUserById, insertChatMessage, getLastTenChatMessages, getPrivateMessages, insertPrivateMessage
 } = require('./libs/db');
 
 
@@ -154,12 +154,43 @@ io.on('connection', socket => {
             .catch(error => console.log("error in Promise.all:", error));
     });
 
-    socket.on("privateMessage", privateMsg => {
-        const receiver_id = privateMsg.receiver_id;
-
+    socket.on("privateMessages", otherUserId => {
+        console.log("request for privateMessages received:", otherUserId);
+        getPrivateMessages(userId, otherUserId).then( ({rows}) => {
+            socket.emit("privateMessages", rows);
+        }).catch(error => console.log("error in getPrivateMessages:", error));
     });
 
-    socket.on("acceptFriendRequest", otherUserId => {
+    socket.on("privateMessage", privateMsg => {
+        const receiver_id = privateMsg.receiver_id;
+        const message = privateMsg.message;
+        console.log("privateMessage received:", privateMsg);
+        Promise.all([insertPrivateMessage(message, userId, receiver_id), getUserById(userId)])
+            .then(results => {
+                const created_at = results[0].rows[0]["created_at"];
+                const messageId = results[0].rows[0]["id"];
+                const user = results[1].rows[0];
+
+                for (const socketId in listOfOnlineUsers) {
+                    if (
+                        listOfOnlineUsers[socketId] == receiver_id ||
+                        listOfOnlineUsers[socketId] == userId
+                    ) {
+                        io.sockets.sockets[socketId].emit('privateMessage', {
+                            userId: userId,
+                            first: user.first,
+                            last: user.last,
+                            url: user.url,
+                            messageId: messageId,
+                            message: message,
+                            created_at: created_at
+                        });
+                    }
+                }
+            }).catch(error => console.log("error in Promise.all:", error));
+    });
+
+    socket.on("friendRequestUpdate", otherUserId => {
         // search for otherUserId in listOfOnlineUsers
         const userSockets = [];
         for (const socketId in listOfOnlineUsers) {

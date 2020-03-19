@@ -1,8 +1,5 @@
 import axios from "./axios";
 import { socket } from "./socket";
-import { useSelector } from "react-redux";
-
-// if other user is online emit message
 
 export async function receiveFriends() {
     const { data } = await axios.get("/friends.json");
@@ -17,7 +14,7 @@ export async function acceptFriendRequest(otherUserId) {
     await axios.post(`/accept-friend-request/${otherUserId}`);
 
     // if otherUserId is online use socket.io to notify otherUserId
-    socket.emit("acceptFriendRequest", otherUserId);
+    socket.emit("friendRequestUpdate", otherUserId);
 
     return {
         type: "ACCEPT_FRIENDSHIP",
@@ -27,8 +24,7 @@ export async function acceptFriendRequest(otherUserId) {
 
 export async function endFriendship(otherUserId) {
     await axios.post(`/end-friendship/${otherUserId}`);
-    console.log("endFriendship about to reduce");
-    console.log("endFriendship otherUserId:", otherUserId);
+    socket.emit("friendRequestUpdate", otherUserId);
     return {
         type: "END_FRIENDSHIP",
         otherUserId: otherUserId
@@ -50,6 +46,24 @@ export function chatMessage(messageObj) {
     return {
         type: "CHAT_MESSAGE",
         chatMessage: messageObj
+    };
+}
+
+export function privateMessages(messages) {
+    console.log("privateMessages action running");
+    console.log("privateMessages:", messages);
+    return {
+        type: "PRIVATE_MESSAGES",
+        privateMessages: messages
+    };
+}
+
+export function privateMessage(messageObj) {
+    console.log("privateMessage action running");
+    console.log("privateMessage:", messageObj);
+    return {
+        type: "PRIVATE_MESSAGE",
+        privateMessage: messageObj
     };
 }
 

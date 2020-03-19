@@ -1,6 +1,9 @@
 import * as io from 'socket.io-client';
 
-import { chatMessages, chatMessage, usersOnline, userIsOnline, userIsOffline, receiveFriends } from './actions';
+import {
+    chatMessages, chatMessage, usersOnline, userIsOnline, userIsOffline,
+    receiveFriends, privateMessage, privateMessages
+} from './actions';
 
 export let socket;
 
@@ -61,9 +64,27 @@ export const init = store => {
 
         socket.on(
             'friendRequestUpdate',
-            user => {
+            () => {
                 store.dispatch(
                     receiveFriends()
+                );
+            }
+        );
+
+        socket.on(
+            'privateMessage',
+            msg => {
+                store.dispatch(
+                    privateMessage(msg)
+                );
+            }
+        );
+
+        socket.on(
+            'privateMessages',
+            msgs => {
+                store.dispatch(
+                    privateMessages(msgs)
                 );
             }
         );

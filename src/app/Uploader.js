@@ -1,10 +1,7 @@
 import React from "react";
 import axios from "../axios";
-import { useDispatch } from 'react-redux';
-import { imageChange } from "../actions";
 
 export default function({ id, setImage, closeUploader }) {
-    const dispatch = useDispatch();
 
     function readFile(e) {
         const file = e.target.files[0];

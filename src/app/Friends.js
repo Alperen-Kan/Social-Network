@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from 'react-redux';
-import { receiveFriends, acceptFriendRequest, endFriendship, cancelFriendRequest } from "../actions";
+import { receiveFriends, acceptFriendRequest, endFriendship } from "../actions";
 import ProfilePic from "./ProfilePic";
 import Button from '@material-ui/core/Button';
 import SimpleCard from './simplecard';
@@ -9,7 +9,7 @@ export default function Friends(props) {
 
     const dispatch = useDispatch();
 
-    useEffect( () => {
+    useEffect(() => {
         dispatch(receiveFriends());
     }, []);
 

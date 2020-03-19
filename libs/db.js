@@ -224,7 +224,7 @@ exports.insertPrivateMessage = function(message, sender_id, receiver_id) {
 exports.getPrivateMessages = function(sender_id, receiver_id) {
     return db.query(
         `
-        SELECT users.id, users.first, users.last, chat_messages.message, chat_messages.created_at
+        SELECT users.id AS "userId", users.first, users.last, users.url, chat_messages.id AS "messageId", chat_messages.message, chat_messages.created_at
         FROM chat_messages
         JOIN users
         ON (receiver_id = $2 AND sender_id = $1 AND sender_id = users.id)

@@ -69,10 +69,20 @@ export default function(state = {}, action) {
         };
     }
 
-    if(action.type === "IMAGE_CHANGE") {
+    if (action.type === "PRIVATE_MESSAGES") {
         state = {
             ...state,
-            // do something
+            privateMessages: action.privateMessages
+        };
+    }
+
+    if (action.type === "PRIVATE_MESSAGE") {
+        state = {
+            ...state,
+            privateMessages: [
+                ...state.privateMessages,
+                action.privateMessage
+            ]
         };
     }
 
