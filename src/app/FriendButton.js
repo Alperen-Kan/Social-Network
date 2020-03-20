@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "../axios";
+import { socket } from "../socket";
 
 export default function FriendButton({otherUserId}) {
 
@@ -12,16 +13,20 @@ export default function FriendButton({otherUserId}) {
             try {
                 if (buttonText == "Make Friend Request") {
                     const { data } = await axios.post(`/make-friend-request/${otherUserId}`);
+                    socket.emit("friendRequestUpdate", otherUserId);
                     setButtonText(data.buttonText);
 
                 } else if (buttonText == "Accept Friend Request") {
                     const { data } = await axios.post(`/accept-friend-request/${otherUserId}`);
+                    socket.emit("friendRequestUpdate", otherUserId);
                     setButtonText(data.buttonText);
 
                 } else {
                     const { data } = await axios.post(`/end-friendship/${otherUserId}`);
+                    socket.emit("friendRequestUpdate", otherUserId);
                     setButtonText(data.buttonText);
                 }
+
             } catch (e) {
                 console.log("error in handleClick:", e);
             }

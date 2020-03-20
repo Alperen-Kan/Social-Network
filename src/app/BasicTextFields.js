@@ -11,14 +11,18 @@ const useStyles = makeStyles(theme => ({
     }
 }));
 
-export default function BasicTextFields() {
+export default function BasicTextFields(props) {
     const classes = useStyles();
 
     return (
-        <form className={classes.root} noValidate autoComplete="off">
-            <TextField id="standard-basic" label="Standard" />
-            <TextField id="filled-basic" label="Filled" variant="filled" />
-            <TextField id="outlined-basic" label="Outlined" variant="outlined" />
+        <form className={classes.root} noValidate autoComplete="off" onKeyDown={props.keyHandler}>
+            <TextField
+                id="outlined-multiline-static"
+                label="Type here"
+                multiline
+                rows="4"
+                variant="outlined"
+            />
         </form>
     );
 }

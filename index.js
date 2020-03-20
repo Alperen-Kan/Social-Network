@@ -167,7 +167,8 @@ io.on('connection', socket => {
         console.log("privateMessage received:", privateMsg);
         Promise.all([insertPrivateMessage(message, userId, receiver_id), getUserById(userId)])
             .then(results => {
-                const created_at = results[0].rows[0]["created_at"];
+                var created_at = results[0].rows[0]["created_at"];
+
                 const messageId = results[0].rows[0]["id"];
                 const user = results[1].rows[0];
 
@@ -191,21 +192,15 @@ io.on('connection', socket => {
     });
 
     socket.on("friendRequestUpdate", otherUserId => {
-        // search for otherUserId in listOfOnlineUsers
-        const userSockets = [];
         for (const socketId in listOfOnlineUsers) {
-            if (listOfOnlineUsers[socketId] == otherUserId) {
-                console.log("user is online with socket id:", socketId);
-                userSockets.push(socketId);
+            if (
+                listOfOnlineUsers[socketId] == otherUserId ||
+                listOfOnlineUsers[socketId] == userId
+
+            ) {
+                io.sockets.sockets[socketId].emit('friendRequestUpdate');
             }
         }
-        console.log("userSockets:", userSockets);
-        getUserById(otherUserId).then( ({rows}) => {
-
-            for (var i = 0; i < userSockets.length; i++) {
-                io.sockets.sockets[userSockets[i]].emit('friendRequestUpdate', rows[0]);
-            }
-        }).catch(error => console.log("error in getUserById:", error));
     });
 
 });
