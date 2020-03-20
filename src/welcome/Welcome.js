@@ -12,6 +12,7 @@ export default function Welcome() {
         <HashRouter>
             <div>
                 <h1>Welcome to Social Isolation...</h1>
+                <h1>...once you join, you cannot leave</h1>
                 <div>
                     <Route exact component={Registration} path="/" />
                     <Route exact component={Login} path="/login" />
