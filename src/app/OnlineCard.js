@@ -8,11 +8,12 @@ import Typography from '@material-ui/core/Typography';
 
 const useStyles = makeStyles({
     root: {
-        maxWidth: 345,
+        height: 200,
+        width: 150,
     },
 });
 
-export default function SimpleCard({id, url, first, last, button, clickHandler}) {
+export default function OnlineCard({id, url, first, last, clickHandler}) {
     const classes = useStyles();
 
     return (
@@ -21,17 +22,16 @@ export default function SimpleCard({id, url, first, last, button, clickHandler})
                 component="img"
                 alt={`${first} ${last}`}
                 image={url}
-                height="200"
+                height="100"
                 onClick={clickHandler}
             />
             <CardContent>
-                <Typography variant="h4">
-                    {first} {last}
+                <Typography variant="h6">
+                    {first}
+                    <br />
+                    {last}
                 </Typography >
             </CardContent>
-            <CardActions>
-                {button}
-            </CardActions>
         </Card>
     );
 }

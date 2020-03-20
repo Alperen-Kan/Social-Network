@@ -8,34 +8,36 @@ export default function Header ({data}) {
     return (
         <div className="header">
 
-            <h1>The Network</h1>
+            <h1>Social Isolation</h1>
 
-            <Link to="/users-online">
-                <h3>See who&apos;s online</h3>
-            </Link>
+            <div className="header-link-container">
+                <Link className="header-link" to="/users-online">
+                    <h3>See who&apos;s online</h3>
+                </Link>
 
-            <Link to="/chat">
-                <h3>Chat</h3>
-            </Link>
+                <Link className="header-link" to="/chat">
+                    <h3>Chat</h3>
+                </Link>
 
-            <Link to="/findpeople">
-                <h3>Find People</h3>
-            </Link>
+                <Link className="header-link" to="/findpeople">
+                    <h3>Find People</h3>
+                </Link>
 
-            <Link to="/friends">
-                <h3>Friends</h3>
-            </Link>
+                <Link className="header-link" to="/friends">
+                    <h3>Friends</h3>
+                </Link>
 
-            <Logout/>
+                <Logout/>
 
-            <Link to="/">
-                <ProfilePic
-                    id={data.id}
-                    first={data.first}
-                    last={data.last}
-                    url={data.url}
-                />
-            </Link>
+                <Link to="/">
+                    <ProfilePic
+                        id={data.id}
+                        first={data.first}
+                        last={data.last}
+                        url={data.url}
+                    />
+                </Link>
+            </div>
         </div>
     );
 }

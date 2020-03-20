@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { receiveFriends, acceptFriendRequest, endFriendship } from "../actions";
 import ProfilePic from "./ProfilePic";
 import Button from '@material-ui/core/Button';
-import SimpleCard from './simplecard';
+import FriendsCard from './FriendsCard';
 
 export default function Friends(props) {
 
@@ -45,7 +45,7 @@ export default function Friends(props) {
                 <div className="friends-container">
                     {friends && friends.map(friend => (
                         <div key={friend.id}>
-                            <SimpleCard
+                            <FriendsCard
                                 id={friend.id}
                                 url={friend.url}
                                 first={friend.first}
@@ -67,7 +67,7 @@ export default function Friends(props) {
                 <div className="friends-container">
                     {friendRequestsReceived && friendRequestsReceived.map(friend => (
                         <div key={friend.id}>
-                            <SimpleCard
+                            <FriendsCard
                                 id={friend.id}
                                 url={friend.url}
                                 first={friend.first}
@@ -89,7 +89,7 @@ export default function Friends(props) {
                 <div className="friends-container">
                     {friendRequestsSent && friendRequestsSent.map(friend => (
                         <div key={friend.id}>
-                            <SimpleCard
+                            <FriendsCard
                                 id={friend.id}
                                 url={friend.url}
                                 first={friend.first}

@@ -7,7 +7,7 @@ export default function Logout() {
     // };
 
     return (
-        <a href="/logout">
+        <a className="header-link" href="/logout">
             <h3>Log out</h3>
         </a>
     );

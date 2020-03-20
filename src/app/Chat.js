@@ -64,9 +64,9 @@ export default function Chat() {
                             last={msg.last}
                         />
                         <div>
-                            <span className="chat-username">{msg.first} {msg.last}</span>
+                            <b><span className="chat-username" >{msg.first} {msg.last}</span></b>
                             <span className="chat-message-time"> {dateFormat(msg.created_at)}</span>
-                            <p>{msg.message}</p>
+                            <p className="message-on-display">{msg.message}</p>
                         </div>
                     </div>
                 ))}

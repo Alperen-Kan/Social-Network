@@ -6,6 +6,7 @@ import { socket } from "../socket";
 import FriendButton from "./FriendButton";
 import ProfilePic from "./ProfilePic";
 import BasicTextFields from "./BasicTextFields";
+import ProfileCard from './Profilecard';
 
 
 export default function OtherProfile(props) {
@@ -67,9 +68,6 @@ export default function OtherProfile(props) {
     }
 
     const dateFormat = dateStr => {
-        // const year = dateStr.split("T")[0].split("-")[0];
-        // const month = dateStr.split("T")[0].split("-")[1];
-        // const day = dateStr.split("T")[0].split("-")[2];
         const [year, month, day] = dateStr.split("T")[0].split("-");
         const [hours, minutes, seconds] = dateStr.split("T")[1].split(".")[0].split(":");
         const date = new Date(Date.UTC(year, month, day, hours, minutes, seconds));
@@ -85,14 +83,14 @@ export default function OtherProfile(props) {
         <>
             {
                 otherUser.id &&
-                <div>
-                    <img
-                        src={otherUser.url}
-                        alt={`${otherUser.first} ${otherUser.last}`}
+                    <ProfileCard
+                        id={otherUser.id}
+                        url={otherUser.url}
+                        first={otherUser.first}
+                        last={otherUser.last}
+                        bio={otherUser.bio}
+                        button={<FriendButton otherUserId={otherUser.id} />}
                     />
-                    <FriendButton otherUserId={otherUser.id} />
-                    <p>{otherUser.bio}</p>
-                </div>
             }
 
             {
@@ -111,9 +109,9 @@ export default function OtherProfile(props) {
                                     last={msg.last}
                                 />
                                 <div>
-                                    <span className="chat-username">{msg.first} {msg.last}</span>
+                                    <b><span className="chat-username">{msg.first} {msg.last}</span></b>
                                     <span className="chat-message-time"> {dateFormat(msg.created_at)}</span>
-                                    <p>{msg.message}</p>
+                                    <p className="message-on-display">{msg.message}</p>
                                 </div>
                             </div>
                         ))}

@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from "react";
 import axios from "../axios";
 import { socket } from "../socket";
+import Button from '@material-ui/core/Button';
 
 export default function FriendButton({otherUserId}) {
 
     const [buttonText, setButtonText] = useState('Make Friend Request');
+
+    let color;
 
     const handleClick = (e) => {
         (async () => {
@@ -48,7 +51,15 @@ export default function FriendButton({otherUserId}) {
 
     }, []);
 
+    if (buttonText=="Make Friend Request") {
+        color = "primary";
+    } else {
+        color = "secondary";
+    }
+
     return (
-        <button onClick={handleClick}>{buttonText}</button>
+        <Button onClick={handleClick} variant="contained" color={color}>
+            {buttonText}
+        </Button>
     );
 }
