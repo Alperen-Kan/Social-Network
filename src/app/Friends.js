@@ -38,66 +38,74 @@ export default function Friends(props) {
 
     return (
         <>
-        <div>
-            <h2>Friends</h2>
-            {friends && friends.map(friend => (
-                <div key={friend.id}>
-                <SimpleCard
-                    id={friend.id}
-                    url={friend.url}
-                    first={friend.first}
-                    last={friend.last}
-                    clickHandler={() => clickHandler(friend.id)}
-                    button={
-                        <Button onClick={() => dispatch(endFriendship(friend.id))} variant="contained" color="secondary">
-                            End Friendship
-                        </Button>
-                    }
-                />
-                </div>
-            ))}
-        </div>
+        <div id="friends-component">
 
-        <div>
-            <h2>Friend Requests Received</h2>
-            {friendRequestsReceived && friendRequestsReceived.map(friend => (
-                <div key={friend.id}>
-                <SimpleCard
-                    id={friend.id}
-                    url={friend.url}
-                    first={friend.first}
-                    last={friend.last}
-                    clickHandler={() => clickHandler(friend.id)}
-                    button={
-                        <Button onClick={() => dispatch(acceptFriendRequest(friend.id))} variant="contained" color="primary">
-                            Accept Friend Request
-                        </Button>
-                    }
-                />
+            <div className="friends-category">
+                <h2>Friends</h2>
+                <div className="friends-container">
+                    {friends && friends.map(friend => (
+                        <div key={friend.id}>
+                            <SimpleCard
+                                id={friend.id}
+                                url={friend.url}
+                                first={friend.first}
+                                last={friend.last}
+                                clickHandler={() => clickHandler(friend.id)}
+                                button={
+                                    <Button onClick={() => dispatch(endFriendship(friend.id))} variant="contained" color="secondary">
+                                        End Friendship
+                                    </Button>
+                                }
+                            />
+                        </div>
+                    ))}
                 </div>
-            ))}
-        </div>
+            </div>
 
-        <div>
-            <h2>Friend Requests Sent</h2>
-            {friendRequestsSent && friendRequestsSent.map(friend => (
-                <div key={friend.id}>
-                <SimpleCard
-                    id={friend.id}
-                    url={friend.url}
-                    first={friend.first}
-                    last={friend.last}
-                    clickHandler={() => clickHandler(friend.id)}
-                    button={
-                        <Button onClick={() => dispatch(endFriendship(friend.id))} variant="contained" color="secondary">
-                            Cancel Friend Request
-                        </Button>
-                    }
-                />
+            <div className="friends-category">
+                <h2>Friend Requests Received</h2>
+                <div className="friends-container">
+                    {friendRequestsReceived && friendRequestsReceived.map(friend => (
+                        <div key={friend.id}>
+                            <SimpleCard
+                                id={friend.id}
+                                url={friend.url}
+                                first={friend.first}
+                                last={friend.last}
+                                clickHandler={() => clickHandler(friend.id)}
+                                button={
+                                    <Button onClick={() => dispatch(acceptFriendRequest(friend.id))} variant="contained" color="primary">
+                                        Accept Friend Request
+                                    </Button>
+                                }
+                            />
+                        </div>
+                    ))}
                 </div>
-            ))}
-        </div>
+            </div>
 
+            <div className="friends-category">
+                <h2>Friend Requests Sent</h2>
+                <div className="friends-container">
+                    {friendRequestsSent && friendRequestsSent.map(friend => (
+                        <div key={friend.id}>
+                            <SimpleCard
+                                id={friend.id}
+                                url={friend.url}
+                                first={friend.first}
+                                last={friend.last}
+                                clickHandler={() => clickHandler(friend.id)}
+                                button={
+                                    <Button onClick={() => dispatch(endFriendship(friend.id))} variant="contained" color="secondary">
+                                        Cancel Friend Request
+                                    </Button>
+                                }
+                            />
+                        </div>
+                    ))}
+                </div>
+            </div>
+        </div>
         </>
     )
 }

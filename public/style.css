@@ -184,3 +184,17 @@ input, button {
 .chat-message {
     display: flex
 }
+
+#friends-component {
+    display: flex;
+    flex-direction: column;
+}
+
+.friends-category {
+    display: flex;
+    flex-direction: column;
+}
+
+.friends-container {
+    display: flex;
+}
