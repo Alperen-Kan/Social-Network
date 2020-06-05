@@ -8,7 +8,6 @@ private messaging and chat room conversations.
 ## Tech Stack
 * JavaScript/HTML5/CSS3
 * React/Redux/Material-UI
-* Node.js/Express
-* Socket.io
+* Node.js/Express/Socket.io
 * PostgreSQL
 * AWS S3 & SES
